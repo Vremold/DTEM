@@ -20,15 +20,15 @@ class CodeFileExtractor(object):
                     return True
             return False
         
-        for filenanme in os.listdir(project_dir):
+        for filename in os.listdir(project_dir):
             out_dir = os.path.join(out_dir, project_dir)
             if not os.path.exists(out_dir):
                 os.mkdir(out_dir)
-            filepath = os.path.join(project_dir, filenanme)
+            filepath = os.path.join(project_dir, filename)
             if os.path.isdir(filepath):
                 self.extract_code_files_in_project(filepath, out_dir)
             elif os.path.isfile(filepath):
-                if check_match_suffix(fileanme):
+                if check_match_suffix(filename):
                     shutil.copy(filepath, os.path.join(out_dir, filename))
 
 if __name__ == "__main__":
