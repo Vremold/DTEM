@@ -8,4 +8,5 @@
 
 ## 嵌入可视化
 - `pip install MulticoreTSNE`
-- 执行 `python tsne.py INPUT OUTPUT` (此处INPUT为Deepwalk或Node2vec输出的嵌入)
+- 执行 `python tsne.py INPUT OUTPUT` (此处INPUT为Deepwalk或Node2vec输出的嵌入)得到2维向量
+- 执行 `python visual.py EMB_INPUT 2D_INPUT OUTPUT` (此处EMB_INPUT为deepwalk或node2vec输出的高维向量，2D_INPUT为tsne输出的2维向量)得到gexf文件，可以使用Gephi软件得到图像
