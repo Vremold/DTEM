@@ -129,6 +129,7 @@ dmypy.json
 
 graph/
 src/
+embedded/
 
 GHCrawler/repo_statistics.txt
 GHCrawler/repo_contribution.txt
