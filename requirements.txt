@@ -1,0 +1,12 @@
+dgl==1.0.2+cu117
+joblib==1.2.0
+matplotlib==3.7.1
+networkx==3.0
+numpy==1.24.2
+Requests==2.30.0
+scikit_learn==1.2.2
+scipy==1.10.1
+torch==1.13.0+cu117
+torch_sparse==0.6.17
+tqdm==4.65.0
+transformers==4.27.4
