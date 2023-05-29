@@ -67,10 +67,10 @@ if __name__ == "__main__":
     
 
     g = Graph(
-        commit_rels_f="/root/wujw/DTEM/GNN/DataPreprocess/full_graph/content/contributor_commit_repo.txt",
-        follow_rels_f="/root/wujw/DTEM/GNN/DataPreprocess/full_graph/content/contributor_follow_contributor.txt",
-        star_rels_f="/root/wujw/DTEM/GNN/DataPreprocess/full_graph/content/contributor_star_repo.txt",
-        watch_rels_f="/root/wujw/DTEM/GNN/DataPreprocess/full_graph/content/contributor_watch_repo.txt",
+        commit_rels_f="../../../GNN/DataPreprocess/full_graph/content/contributor_commit_repo.txt",
+        follow_rels_f="../../../GNN/DataPreprocess/full_graph/content/contributor_follow_contributor.txt",
+        star_rels_f="../../../GNN/DataPreprocess/full_graph/content/contributor_star_repo.txt",
+        watch_rels_f="../../../GNN/DataPreprocess/full_graph/content/contributor_watch_repo.txt",
     )
 
     contributor_labels = {}

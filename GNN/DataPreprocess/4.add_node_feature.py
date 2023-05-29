@@ -14,7 +14,7 @@ structure_graph_file = "./full_graph/structure_graph.bin"
 issue_idx_file = "./full_graph/content/issues.json"
 pr_idx_file = "./full_graph/content/prs.json"
 repo_idx_file = "./full_graph/content/repositories.json"
-feature_dir = "/root/wujw/DTEM/NodeFeatureInitializer/export"
+feature_dir = "../../NodeFeatureInitializer/export"
 metapath_node_embedding_file = "./cache/full_graph/node_metapath_embedding.bin"
 dst_graph_file = "./full_graph/structure_graph_with_node_feature.bin"
 
@@ -31,7 +31,7 @@ if __name__ == "__main__":
         load_cache=False
     )
     repo_feature = repo_feature_loader.load_embedding_for_repo_node(
-        repo_code_embedding_file=os.path.join(feature_dir, "project_embeddings.pkl"), code_embed_size=768,
+        repo_code_embedding_file=os.path.join(feature_dir, "repo_code_embedding.pkl"), code_embed_size=768,
         repo_text_embedding_file=os.path.join(feature_dir, "repo_text_embedding.pkl"), text_embed_size=768,
         repo_language_embedding_file=os.path.join(feature_dir, "repo_languages_pca.pkl"), language_embed_size=256,
         repo_topic_embedding_file=os.path.join(feature_dir, "repo_topics_pca.pkl"), topic_embed_size=256,

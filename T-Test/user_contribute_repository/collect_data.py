@@ -10,7 +10,7 @@ import torch
 from scipy import stats
 
 class DatasetGenerator():
-    def __init__(self, contributor_idx_file, repo_idx_file, repo_lang_file) -> None:
+    def __init__(self, contributor_idx_file, repo_idx_file) -> None:
         with open(contributor_idx_file, "r", encoding="utf-8") as inf:
             self.contributor_idx = json.load(inf)
 
@@ -116,11 +116,9 @@ if __name__ == "__main__":
         print("Generating from scratch...")
         repository_idx_file = "../../GNN/DataPreprocess/full_graph/content/repositories.json"
         contributor_idx_file = "../../GNN/DataPreprocess/full_graph/content/contributors.json"
-        repo_lang_file = "./data/repo_langs.json"
         dataset_generator = DatasetGenerator(
             contributor_idx_file=contributor_idx_file,
             repo_idx_file=repository_idx_file,
-            repo_lang_file=repo_lang_file
         )
         positive_samples, negative_samples = dataset_generator.generate_usr_contribute_repo("../../GHCrawler/cleaned/repo_contributions.txt")
         with open(positive_cache_path, "wb") as ouf:

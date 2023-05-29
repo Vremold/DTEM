@@ -44,7 +44,7 @@ class PRCodeEmbeddingAggregator(object):
 
 if __name__ == "__main__":
     pcea = PRCodeEmbeddingAggregator(
-        project_path_embedding_file="./export/project_path_emebeddings.pkl", 
+        project_path_embedding_file="./export/repo_code_path_emebeddings.pkl", 
         embed_size=768)
     pr_code_embeddings = pcea.load_pr_code_embedding("./PREmbedding/pr_modified_paths.json")
     

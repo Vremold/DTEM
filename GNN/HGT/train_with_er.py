@@ -13,7 +13,7 @@ import torch.nn.functional as F
 
 import wandb
 
-from hgt_v2 import HGT
+from hgt import HGT
 from model import (EdgeRegresionScorer)
 from utils import (GraphLoader, 
                    generate_logits_and_labels_for_er, 

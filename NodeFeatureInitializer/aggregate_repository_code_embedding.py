@@ -48,7 +48,7 @@ class ProjectEmbeddingAggregator():
                 project_path_embeddings[project][path] /= project_path_n_funcs[project][path]
         return project_path_embeddings
 
-    def aggregate_project_embedding_for_project(self, project_path_embeddings):
+    def aggregate_project_embedding_for_repository(self, project_path_embeddings):
         project_embeddings = dict()
         for project in project_path_embeddings:
             n_paths = len(project_path_embeddings[project])
@@ -65,11 +65,11 @@ if __name__ == "__main__":
         path_n_funcs_dir="./RepositoryCodeEmbedding/result",
         embed_size=768)
     project_path_embeddings = pea.load_path_embedding()
-    with open("./export/repository_code_path_emebeddings.pkl", "wb") as outf:
+    with open("./export/repo_code_path_emebedding.pkl", "wb") as outf:
         pickle.dump(project_path_embeddings, outf)
     print("Aggregate path embedding finished")
-    project_embeddings = pea.aggregate_project_embedding_for_project(project_path_embeddings)
-    with open("./export/repository_code_embeddings.pkl", "wb") as outf:
+    project_embeddings = pea.aggregate_project_embedding_for_repository(project_path_embeddings)
+    with open("./export/repo_code_embedding.pkl", "wb") as outf:
         pickle.dump(project_embeddings, outf)
     print("Aggregate project embedding finished")
 

@@ -79,10 +79,6 @@ if __name__ == "__main__":
     for contributor_idx, search_scope, labels in dataset:
         if len(labels) < 5:
             continue
-        
-        search_scope_length = len(search_scope)
-        total_repo_set = set(range(50000))
-        search_scope.extend(random.sample(list(total_repo_set - set(search_scope)), search_scope_length))
 
         d = MyDataset(contributor_idx, search_scope, repo_embedding, contributor_embedding, is_tensor=False)
         dataloader = DataLoader(d, batch_size=128, shuffle=False, collate_fn=collate_fn)

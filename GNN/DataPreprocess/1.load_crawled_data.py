@@ -154,7 +154,6 @@ class CrawledDataLoader(object):
     def load_graph(self):
         self.load_contributors()
         self.load_issues()
-        # self.load_prs(pr_modified_path_file="/media/dell/disk/wujw/DTEM/NodeFeatureInitilizer/PREmbedding/pr_modified_paths.json")
         self.load_prs(pr_modified_path_file=None)
         self.load_stargazers()
         self.load_watchers()

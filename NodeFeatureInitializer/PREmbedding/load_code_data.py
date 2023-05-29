@@ -36,13 +36,11 @@ if __name__ == "__main__":
     for pr_name in pr_modified_filenames:
         pr_modified_filenames[pr_name] = list(pr_modified_filenames[pr_name])
 
-    # with open(DST_FILE, "r", encoding="utf-8") as inf:
-    #     obj = json.load(inf)
-    new_obj = {}
-    for pr_name in obj:
-        filtered_fnames = [t for t in obj[pr_name] if contain_valid_suffix(t)]
+    new_pr_modified_filenames = {}
+    for pr_name in pr_modified_filenames:
+        filtered_fnames = [t for t in pr_modified_filenames[pr_name] if contain_valid_suffix(t)]
         if not filtered_fnames:
             continue
-        new_obj[pr_name] = filtered_fnames
+        new_pr_modified_filenames[pr_name] = filtered_fnames
     with open(DST_FILE, "w", encoding="utf-8") as outf:
-        json.dump(new_obj, outf, ensure_ascii=False)
+        json.dump(new_pr_modified_filenames, outf, ensure_ascii=False)

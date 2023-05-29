@@ -52,21 +52,21 @@ class TextEmbeddingAggregator(object):
         return repo_embedding
     
 if __name__ == "__main__":
-    # issue_embedding = TextEmbeddingAggregator.load_issue_embedding(
-    #     text_path="./IssueEmbedding/issue_descriptions.txt",
-    #     embedding_path="./IssueEmbedding/issue_description_embedding.txt",
-    #     embed_size=768
-    # )
-    # with open("./export/issue_text_embedding.pkl", "wb") as outf:
-    #     pickle.dump(issue_embedding, outf)
-    # print("Loading issue text embedding finished")
-    # pr_embedding = TextEmbeddingAggregator.load_pr_embedding(
-    #     text_path="./PREmbedding/pr_descriptions.txt",
-    #     embedding_path="./PREmbedding/pr_description_embedding.txt",
-    #     embed_size=768
-    # )
-    # with open("./export/pr_text_embedding.pkl", "wb") as outf:
-    #     pickle.dump(pr_embedding, outf)
+    issue_embedding = TextEmbeddingAggregator.load_issue_embedding(
+        text_path="./IssueEmbedding/issue_descriptions.txt",
+        embedding_path="./IssueEmbedding/issue_description_embedding.txt",
+        embed_size=768
+    )
+    with open("./export/issue_text_embedding.pkl", "wb") as outf:
+        pickle.dump(issue_embedding, outf)
+    print("Loading issue text embedding finished")
+    pr_embedding = TextEmbeddingAggregator.load_pr_embedding(
+        text_path="./PREmbedding/pr_descriptions.txt",
+        embedding_path="./PREmbedding/pr_description_embedding.txt",
+        embed_size=768
+    )
+    with open("./export/pr_text_embedding.pkl", "wb") as outf:
+        pickle.dump(pr_embedding, outf)
     print("Loading pr text embedding finished")
     repo_embedding = TextEmbeddingAggregator.load_repo_embedding(
         text_path="./RepositoryEmbedding/repo_descriptions.txt",

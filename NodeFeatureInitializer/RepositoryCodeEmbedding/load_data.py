@@ -119,15 +119,17 @@ def extract_code_snippets(project_subdirs, finished_projects, process_no):
                 method_strings = php_extractor.extract_method(code_filepath)
                 outf = php_outf
                 pass
-            outf.write(
-                json.dumps({
-                    "project": project,
-                    "path": filename.replace("\\", "/"),
-                    "method_strings": method_strings,
-                    "lang": lang
-                }, 
-                ensure_ascii=False)+"\n"
-            )
+            path = filename.replace("\\", "/")
+            for code in method_strings:
+                outf.write(
+                    json.dumps({
+                        "project": project,
+                        "path": path,
+                        "code": code,
+                        "lang": lang
+                    }, 
+                    ensure_ascii=False)+"\n"
+                )
 
 def multi_process_execution():
     finished_projects = dict()

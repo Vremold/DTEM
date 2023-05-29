@@ -77,7 +77,7 @@ class ParameterNamespace():
 
         # pretrained model path
         # Please replace the path with your own pretrained model path
-        self.pretrain_model_path = "/root/wujw/DTEM/GNN/RGCN/pretrained/latest/model_in_epoch17"
+        self.pretrain_model_path = "/root/wujw/DTEM/GNN/RGCN/pretrained/..."
 
     def generate_model_state_file(self, i):
         return os.path.join(self.checkpoint_dir, f"model_in_epoch{i}")

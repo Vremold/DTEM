@@ -49,7 +49,7 @@ if __name__ == "__main__":
     # Please replace the following paths with your own paths
     repo_idx_file = "../../GNN/DataPreprocess/full_graph/content/repositories.json"
     contributor_idx_file = "../../GNN/DataPreprocess/full_graph/content/contributors.json"
-    watch_path = "../../GHCrawler/repo_watchers.txt"
+    watch_path = "../../GHCrawler/cleaned/repo_watchers.txt"
     contribution_file = "../../GHCrawler/cleaned/repo_contributions.txt"
     dst_file="./data/user_watch_repos.json"
 
