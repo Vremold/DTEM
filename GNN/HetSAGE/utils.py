@@ -36,6 +36,7 @@ class GraphLoader():
         print("Total number of edges", hg.number_of_edges())
         print("################# End of the Graph Information  #################")
 
+    # returns hg, node_feats, edge2ids
     def load_graph(self, device=torch.device("cpu")):
         hgs, _ = load_graphs(self.graph_path)
         hg = hgs[0]

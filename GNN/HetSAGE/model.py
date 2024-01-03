@@ -1,6 +1,15 @@
 import torch
 import torch.nn as nn
 
+"""
+    其他几个目录(HetGAT, HetGCN, etc) 的 model.py 和这个文件的都是一模一样的. 
+
+    这只是5个用来训练GNN的任务而已. 包括:
+    1. 结点预测; 
+    2. 边回归; 
+    3. 边分类;
+    4. 链接预测(两个版本);
+"""
 
 class NodeClassificationScorer(nn.Module):
     def __init__(self, in_features, n_classes) -> None:

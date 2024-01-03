@@ -80,7 +80,7 @@ if __name__ == "__main__":
     eval_dataloader = DataLoader(valid_dataset, batch_size=32, shuffle=True, collate_fn=collate_fn)
     test_dataloader = DataLoader(test_dataset, batch_size=32, shuffle=True, collate_fn=collate_fn)
 
-    model = Net(embedding_dim=512)
+    model = Net(embedding_dim=512).to(device)
     optimizer = optim.Adam(model.parameters(), lr=0.0005)
     criterion = nn.BCELoss()
     best_f1 = 0
@@ -151,5 +151,3 @@ if __name__ == "__main__":
             neg_totals += neg_total
     precision, recall, f1 = metric(pos_rights, neg_rights, pos_totals, neg_totals)
     print(f"Test: precision={precision}, recall={recall}, f1={f1}")
-
-

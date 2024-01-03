@@ -2,9 +2,10 @@
 import os
 import sys
 import json
-from tqdm import tqdm
+from datetime import datetime
 import random
 import time
+
 
 import numpy as np
 import torch
@@ -40,7 +41,7 @@ class ParameterNamespace():
         now = time.strftime("%Y,%m,%d,%H,%M,%S")
         self.checkpoint_dir = f"./checkpoint/{special_suffix}_{now}/"
         if not os.path.exists(self.checkpoint_dir):
-            os.mkdir(self.checkpoint_dir)
+            os.makedirs(self.checkpoint_dir)
         
         self.logger = None
 
@@ -157,6 +158,7 @@ def train(model, lp_scorer, train_dataloader, eval_dataloader, test_dataloader, 
     
     best_link_prediction_accuracy = 0
     
+    print(datetime.now())
     for epoch in range(epochs):
         train_lp_losses = []
         train_loss_list = []
@@ -205,13 +207,12 @@ def train(model, lp_scorer, train_dataloader, eval_dataloader, test_dataloader, 
                     "weight_L2": l2_sum,
                     "train_lp_accu": link_prediction_rights / link_prediction_totals,
                 })
-                pass
         
         scheduler.step()
         # Validation
         val_loss, val_link_prediction_accuracy, lp_category_rights, lp_category_totals = \
             evaluate(model, lp_scorer, eval_dataloader, node_feats)
-        print("Train Epoch: {:01d}, lr: {}, train loss: {:.4f}, val loss: {:.4f}, val link prediction accuracy: {:.4f}.".format(
+        print(str(datetime.now()) + " Train Epoch: {:01d}, lr: {}, train loss: {:.4f}, val loss: {:.4f}, val link prediction accuracy: {:.4f}.".format(
             epoch, opt.param_groups[0]["lr"], np.mean(train_loss_list), val_loss,
             val_link_prediction_accuracy), file=pn.logger)
         print_detail_for_lp(lp_category_rights, lp_category_totals, logger=pn.logger)
@@ -239,7 +240,7 @@ if __name__ == "__main__":
     node_feat_dim_dict = {ntype: node_feats[ntype].shape[1] for ntype in hg.ntypes}
     
     """
-    Move the graph to GPU
+        Move the graph to GPU
     """
     if pn.use_gpu:
         hg = hg.to(pn.device)

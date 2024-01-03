@@ -10,8 +10,6 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-# import wandb
-
 from hetsage import HetSAGE
 from model import (EdgeRegresionScorer)
 from utils import (GraphLoader, 
@@ -20,9 +18,6 @@ from utils import (GraphLoader,
                    l2_penalty,)
 
 SPECIAL_SUFFIX = "train_lp_hetsage_15_15_15"
-# wandb.init(
-#     project="HetSAGE_train_lp_hetsage_15_15_15"
-# )
 
 class ParameterNamespace():
     def __init__(self, special_suffix):

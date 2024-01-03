@@ -7,29 +7,67 @@ import dgl.nn.pytorch as dglnn
 import torch
 
 from dgl import load_graphs
-from dgl.transforms import AddReverse
-from dgl.nn.pytorch import MetaPath2Vec
-from torch.optim import SparseAdam
-from torch.utils.data import DataLoader
+from dgl.transforms import addreverse
+from dgl.nn.pytorch import metapath2vec
+from torch.optim import sparseadam
+from torch.utils.data import dataloader
+
+"""
+    只运行一次. 
+    用 metapath_vec 训练节点的 embedding.
+    这个工作的结果将被放到 ./cache/full_graph/node_metapath_embedding.bin 中. 
+
+    ./full_graph/structure_graph.bin => ./cache/full_graph/node_metapath_embedding.bin
+
+    补充: 
+        运行时, 会首先读条(猜测是加载数据), 然后使用GPU训练. 
+"""
 
 if __name__ == "__main__":
     src_structure_graph = "./full_graph/structure_graph.bin"
     hg = load_graphs(src_structure_graph)[0][0]
+    """
+        load_graphs(src_structure_graph) = ([
+            Graph(
+                num_nodes={'contributor': 394474, 'issue': 692554, 'pr': 379496, 'repository': 50000}, 
+                num_edges={
+                    ('contributor', 'contributor_follow_contributor', 'contributor'): 2286407, 
+                    ('contributor', 'contributor_propose_issue', 'issue'): 692554, 
+                    ('contributor', 'contributor_propose_pr', 'pr'): 379498, 
+                    ('contributor', 'contributor_star_repo', 'repository'): 947423, 
+                    ('contributor', 'contributor_watch_repo', 'repository'): 150292, 
+                    ('issue', 'issue_belong_to_repo', 'repository'): 692554, 
+                    ('pr', 'pr_belong_to_repo', 'repository'): 379498, 
+                    ('repository', 'repo_committed_by_contributor', 'contributor'): 161241
+                },                                                             
+                metagraph=[
+                    ('contributor', 'contributor', 'contributor_follow_contributor'), 
+                    ('contributor', 'issue', 'contributor_propose_issue'), 
+                    ('contributor', 'pr', 'contributor_propose_pr'), 
+                    ('contributor', 'repository', 'contributor_star_repo'), 
+                    ('contributor', 'repository', 'contributor_watch_repo'), 
+                    ('issue', 'repository', 'issue_belong_to_repo'), 
+                    ('pr', 'repository', 'pr_belong_to_repo'), 
+                    ('repository', 'contributor', 'repo_committed_by_contributor')
+                ]
+            )
+        ], {})
+    """
 
     print(hg.etypes)
 
     metapath_list = [
-        ('contributor', 'contributor_propose_pr', 'pr'),
-        ('pr', 'pr_belong_to_repo', 'repository'),
-        ("repository", "repo_committed_by_contributor", "contributor"),
-        ('contributor', 'contributor_follow_contributor', 'contributor'),
-        ('contributor', 'contributor_star_repo', 'repository'),
-        ("repository", "repo_committed_by_contributor", "contributor"),
-        ('contributor', 'contributor_watch_repo', 'repository'),
-        ("repository", "repo_committed_by_contributor", "contributor"),
-        ('contributor', 'contributor_propose_issue', 'issue'),
-        ('issue', 'issue_belong_to_repo', 'repository'),
-        ("repository", "repo_committed_by_contributor", "contributor"),
+        ('contributor', 'contributor_propose_pr', 'pr'),                        # N
+        ('pr', 'pr_belong_to_repo', 'repository'),                              # S
+        ("repository", "repo_committed_by_contributor", "contributor"),         # S
+        ('contributor', 'contributor_follow_contributor', 'contributor'),       # N
+        ('contributor', 'contributor_star_repo', 'repository'),                 # N*
+        ("repository", "repo_committed_by_contributor", "contributor"),         # N
+        ('contributor', 'contributor_watch_repo', 'repository'),                # N*
+        ("repository", "repo_committed_by_contributor", "contributor"),         # N
+        ('contributor', 'contributor_propose_issue', 'issue'),                  # N
+        ('issue', 'issue_belong_to_repo', 'repository'),                        # N
+        ("repository", "repo_committed_by_contributor", "contributor"),         # N
     ]
 
     model = MetaPath2Vec(

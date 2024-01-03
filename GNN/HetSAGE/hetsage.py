@@ -18,7 +18,7 @@ class HetSAGE(torch.nn.Module):
         out_dim, 
         num_hidden_layers=1,
         feat_drop=0.2,
-        ) -> None:
+    ) -> None:
         super().__init__()
 
         self.embed_size = embed_size

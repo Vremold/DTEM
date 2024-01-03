@@ -2,9 +2,10 @@
 import os
 import sys
 import json
-from tqdm import tqdm
+from datetime import datetime
 import random
 import time
+
 
 import numpy as np
 import torch
@@ -14,10 +15,11 @@ import dgl
 
 import wandb
 
-from hetgat import HetGAT
+from hetsage import HetSAGE
 
 from model import (
-    LinkPredictionScorer_V2 as LinkPredictionScorer)
+    LinkPredictionScorer_V2 as LinkPredictionScorer, 
+    EdgeClassificationScorer)
 
 from utils import (GraphLoader, 
                    print_detail_for_lp, 
@@ -26,9 +28,9 @@ from utils import (GraphLoader,
                    prepare_dataloader_for_lp,
                    l2_penalty)
 
-SPECIAL_SUFFIX = "pretrain_lp_hetgat_residual_15_15_15"
+SPECIAL_SUFFIX = "pretrain_with_structure_graph_7_3"
 wandb.init(
-    project="HetGAT_pretrain_lp_hetgat_residual_15_15_15"
+    project="pretrain_with_structure_graph_7_3"
 )
 
 class ParameterNamespace():
@@ -39,11 +41,12 @@ class ParameterNamespace():
         now = time.strftime("%Y,%m,%d,%H,%M,%S")
         self.checkpoint_dir = f"./checkpoint/{special_suffix}_{now}/"
         if not os.path.exists(self.checkpoint_dir):
-            os.mkdir(self.checkpoint_dir)
+            os.makedirs(self.checkpoint_dir)
         
         self.logger = None
 
-        self.graph_path = "../DataPreprocess/full_graph/structure_graph_with_node_feature.bin"
+        self.graph_path = "../DataPreprocess/full_graph/structure_graph_without_feature.bin"
+        # self.graph_path = "../DataPreprocess/full_graph/structure_graph_with_node_feature.bin"
         
         self.use_gpu = True
         self.device = None
@@ -53,14 +56,11 @@ class ParameterNamespace():
             self.device = torch.device("cpu")
 
         # Model parameters
-        self.num_heads = 4  # number of heads in multi-head attention
-        self.negative_slope = 0.2  # negative slope for LeakyReLU
         self.residual = True  # whether to use residual connection after a GNN layer
         self.use_self_loop = False  # whether to include self loop message in GNN
         self.dropout = 0.2  # dropout rate
-        self.feat_drop = 0.2 # dropout rate for feature
-        self.attn_drop = 0.2 # dropout rate for attention
-        self.fanouts = [15, 15, 15] # fanout of each GNN layer
+        self.feat_drop = 0.2 # feature dropout rate
+        self.fanouts = [7,7,7] # fanout of each GNN layer
         self.num_hidden_layers = len(self.fanouts) - 2 # number of hidden GNN layers other than input and output layer
         self.layer_norm = True  # whether to perform layer normalization before each GNN layer
         
@@ -81,10 +81,12 @@ class ParameterNamespace():
         # training parameters
         self.epochs = 40
         self.lr = 0.0001
-        self.lr_decay = 0.95
+        self.lr_decay = 0.9
         self.weight_decay = 0.001
         self.max_grad = 4
         self.omega = 0.1
+
+        # pretrained model path
 
     def generate_model_state_file(self, i):
         return os.path.join(self.checkpoint_dir, f"model_in_epoch{i}")
@@ -123,7 +125,6 @@ def evaluate(model, lp_scorer, eval_dataloader, node_feats):
             losses.append(loss.item())
             link_prediction_rights += calculate_lp_accuracy(lp_scores, lp_labels, lp_category_rights, lp_category_totals)
             link_prediction_totals += len(lp_scores)
-
     
     wandb.log({
         "validation_lp_loss": np.mean(lp_losses),
@@ -157,14 +158,12 @@ def train(model, lp_scorer, train_dataloader, eval_dataloader, test_dataloader, 
     scheduler = torch.optim.lr_scheduler.StepLR(opt, step_size=5, gamma=pn.lr_decay)
     
     best_link_prediction_accuracy = 0
-    best_edge_classification_accuracy = 0
     
     for epoch in range(epochs):
+        print(datetime.now())
         train_lp_losses = []
         train_loss_list = []
 
-        edge_classification_rights = 0
-        edge_classification_totals = 0
         link_prediction_rights = 0
         link_prediction_totals = 0
 
@@ -214,7 +213,7 @@ def train(model, lp_scorer, train_dataloader, eval_dataloader, test_dataloader, 
         # Validation
         val_loss, val_link_prediction_accuracy, lp_category_rights, lp_category_totals = \
             evaluate(model, lp_scorer, eval_dataloader, node_feats)
-        print("Train Epoch: {:01d}, lr: {}, train loss: {:.4f}, val loss: {:.4f}, val link prediction accuracy: {:.4f}.".format(
+        print(str(datetime.now()) + " Train Epoch: {:01d}, lr: {}, train loss: {:.4f}, val loss: {:.4f}, val link prediction accuracy: {:.4f}.".format(
             epoch, opt.param_groups[0]["lr"], np.mean(train_loss_list), val_loss,
             val_link_prediction_accuracy), file=pn.logger)
         print_detail_for_lp(lp_category_rights, lp_category_totals, logger=pn.logger)
@@ -242,7 +241,7 @@ if __name__ == "__main__":
     node_feat_dim_dict = {ntype: node_feats[ntype].shape[1] for ntype in hg.ntypes}
     
     """
-    Move the graph to GPU
+        Move the graph to GPU
     """
     if pn.use_gpu:
         hg = hg.to(pn.device)
@@ -254,23 +253,18 @@ if __name__ == "__main__":
     n_nodes = hg.number_of_nodes()
     etypes = hg.etypes
     
-    model = HetGAT(
+    model = HetSAGE(
         hg=hg,
         node_feat_dim_dict=node_feat_dim_dict,
         embed_size=pn.embed_size,
         hidden_dim=pn.hidden_size,
         out_dim=pn.out_feats,
-        num_heads=pn.num_heads,
         num_hidden_layers=pn.num_hidden_layers,
-        residual=pn.residual,
-        feat_drop=pn.feat_drop,
-        attn_drop=pn.attn_drop,
-        negative_slope=pn.negative_slope)
+        feat_drop=pn.feat_drop)
     model = model.to(pn.device)
 
-    lp_scorer = LinkPredictionScorer(in_features=pn.hidden_size).to(pn.device)
+    lp_scorer = LinkPredictionScorer(in_features=pn.out_feats).to(pn.device)
 
-    # Randomly drop 0% of the edges
     train_dataloader, val_dataloader, test_dataloader = prepare_dataloader_for_lp(
         hg, 
         fanouts=pn.fanouts,
