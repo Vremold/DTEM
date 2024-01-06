@@ -14,7 +14,6 @@ DATASET_VALID_TEST_FILE_PATH = 'RecommendationTasks/ContributionRepo/metric/data
 
 class Evaluation(): 
 
-
     """
         params: 
         - repo_idexes: Dict[str, int]. 仓库名和编号的对应关系

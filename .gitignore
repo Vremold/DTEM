@@ -15,3 +15,6 @@ GHCrawler/*/*.txt
 *.swp
 **/wandb/**
 QUESTIONS.md
+RecommendationTasks/ContributionRepo_CF/bin/**
+RecommendationTasks/ContributionRepo_CF/metric/result/**
+

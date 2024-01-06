@@ -2,7 +2,7 @@
 
 from .config import \
     TRAIN_DATA_FILE_PATH, CF_DICT_FILE_PATH, \
-    load_data
+    load_data, load_repo_contributions
 
 import pickle
 import math
@@ -10,20 +10,43 @@ import random
 import sys, os
 from typing import Dict, List, Optional
 
-printe = lambda text: print(text, file=sys.stedrr)
+printe = lambda text: print(text, file=sys.stderr)
+from rich import print
+from tqdm.rich import tqdm
+
+
+'''
+    如果你想训练协同过滤模型, 下面是你可以参考的代码(写入项目根目录下的某文件中并运行): 
+
+    ```python
+    from RecommendationTasks.ContributionRepo_CF.model import train_model
+    from RecommendationTasks.ContributionRepo_CF.metric.validate import evaluate 
+    from RecommendationTasks.ContributionRepo_CF.metric.metric import metric 
+
+    train_model(20)   # 协同过滤(CF)中, 选择最接近的20个用户, 训练得到模型文件
+    evaluate('top20') # 运行模型文件, 在测试集上生成一个结果的中间文件; 
+    metric('top20')   # 根据中间文件的结果, 统计出整个集合上的效果 (stdout输出)
+    ```
+
+    see also: 
+        train_model()
+
+'''
 
 class CollaborativeFiltering: 
 
     def __init__(self):
-        self.user_sim_matrix: Dict[int, Dict[int, int]] = {}
-        user_repos: Dict[int, List[int]] = {}
+        self.user_sim_matrix: Dict[int, Dict[int, float]] = {}
+        self.user_repos: Dict[int, List[int]] = {}
 
-    def generate_from(self, filepath: str): 
+    def generate(self, top_count=0): 
 
-        data = load_data(filepath)  # len(data) = 26834
+        data = load_repo_contributions()  # len(data) = 161241
+        # data = load_data(filepath)  # len(data) = 26834
 
         repo_users: Dict[int, List[int]] = {}
-        for dev_id, repo_id, _ in data:  # dev: developer
+        # for dev_id, repo_id, _ in data:  # dev: developer
+        for dev_id, repo_id in data:  # dev: developer
             repo_users.setdefault(repo_id, [])
             repo_users[repo_id].append(dev_id)
 
@@ -49,32 +72,47 @@ class CollaborativeFiltering:
                     user_sim_matrix[u][v] += 1
                     user_sim_matrix[v][u] += 1
 
-        # <user count> = len(set(it[0] for it in data)) = 22340
-        # <repo count> = len(set(it[1] for it in data)) = 19204
+        # <user count> = len(set(it[0] for it in data)) = 114490
+        # <repo count> = len(set(it[1] for it in data)) = 41155
 
-        # 这个数据集很小. 所以不做什么 top 20 之类的操作了. 再小就没有了...
+        """
+            ```python
+            stat = {}
+            for _, v in user_sim_matrix.items(): 
+                size = len(v)
+                stat.setdefault(size, 0)
+                stat[size] += 1
+            stat = {k: stat[k] for k in sorted(stat)}
+            ```
+
+            stat 满足这样的性质: 
+            for k, v in stat: 
+                k := 和某个用户A共同贡献过同一个仓库的用户的数量
+                v := 这样的用户A的个数. 
+
+            结果存放在: stat_codevelopers_count.txt 中. 
+        """            
+
+        # 现在开始计算每个用户和其他用户之间的相似度
+        for ua in tqdm(user_sim_matrix): 
+            sims: Dict[int, float] = { 
+                ub: user_sim_matrix[ua][ub] / \
+                        math.sqrt(len(user_repos[ua]) * len(user_repos[ub]))
+                for ub in user_sim_matrix[ua]
+            }
+            sims = {k: sims[k] for k in (
+                sorted(sims) if top_count == 0 else sorted(sims)[:top_count]
+            )}  
+            user_sim_matrix[ua] = sims
+
+
         # 注意: 这个dict并没有包含数据中的所有仓库和用户. 
         # 如果一个用户做过贡献的所有仓库只有他自己, 那么他就不会出现在这个dict中. 
         self.user_sim_matrix = user_sim_matrix
         self.user_repos = user_repos
 
-        """
-        for k, v in `dict below gen from user_sim_matrix)`: 
-            k := 和某个用户A共同贡献过同一个仓库的用户的数量
-            v := 这样的用户A的个数. 
-        {
-            1: 4097,    2: 2172,    3: 1234,    4: 847,
-            5: 505,     6: 429,     7: 285,     8: 161,
-            9: 132,     10: 90,     11: 75,     12: 57,
-            13: 97,     14: 71,     15: 64,     16: 7,
-            17: 19,     18: 5,      19: 2,      20: 5,
-            21: 23,     23: 19,     24: 1,      27: 23,
-            29: 3,      35: 4,      38: 1,      41: 2
-        }
-        比如说, 
-            只和其他1个用户共同贡献过同样仓库的用户的数量是4097个, 
-            和其他2个用户则是2172个, 以此类推. 
-        """
+        print('Finish generation')
+
 
     def load_pickle(self, filepath: str): 
         with open(filepath, 'rb') as fp: 
@@ -108,14 +146,12 @@ class CollaborativeFiltering:
 
             for dev_id2 in related: 
                 # use cosine-similarity
-                weight = related[dev_id2] / \
-                    math.sqrt(len(self.user_repos[dev_id]) * len(self.user_repos[dev_id2]))
+                weight = related[dev_id2]
                 for repo_id in self.user_repos[dev_id2]: 
                     ret.setdefault(repo_id, 0)
                     ret[repo_id] += weight
             
             ret = sorted(ret.items(), key=lambda it: it[1], reverse=True)
-            print(ret)
             recs = [it[0] for it in ret]  # 按照打分顺序给出推荐的仓库id. 
 
         if search_scope is None: 
@@ -125,7 +161,21 @@ class CollaborativeFiltering:
         # random.shuffle(others)  # TODO rethink about this. Is this necessary? 
         return recs + others
 
-def train_model():
+
+def train_model(top_count=0):
+    '''
+        这个函数用于训练模型. 给定了 top_count 的数量, 
+        此函数将会在协同过滤中, 选择对应数量最佳相关开发者. 
+
+        top_count = 0 时将使用所有的相关开发者, 此时模型输出文件后缀为 'full'
+        其他情况为 f'top{top_count}'. 
+
+        see also: 
+            ./metric/validate.py -> evaluate
+            ../model.py -> train_model
+    '''
+
     klee = CollaborativeFiltering()
-    klee.generate_from(TRAIN_DATA_FILE_PATH)
-    klee.save_pickle(CF_DICT_FILE_PATH)
+    klee.generate(top_count)
+    postfix = 'full' if top_count == 0 else f'top{top_count}'
+    klee.save_pickle(CF_DICT_FILE_PATH + '.' + postfix)
