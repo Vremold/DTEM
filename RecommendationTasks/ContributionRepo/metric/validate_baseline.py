@@ -99,7 +99,7 @@ if __name__ == "__main__":
         rets = np.zeros(21).tolist()
         for i in range(1, 21):
             rets[i] = rets[i - 1]
-            if i-1 < len(output) and output[i - 1] in labels:
+            if i - 1 < len(output) and output[i - 1] in labels:
                 rets[i] = rets[i - 1] + 1
 
         topks[contributor_idx] = (rets, search_scope)

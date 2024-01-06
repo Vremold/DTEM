@@ -7,7 +7,10 @@ import torch.optim as optim
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, Dataset, random_split
 
-feat_size = 2383
+# 建议将此文件和 train_nn.py 做对比. 
+# 参看 train_nn.py
+
+feat_size = 2383  # TODO how is this gotten? 
 
 class Net(nn.Module):
     def __init__(self, embedding_dim):
@@ -82,11 +85,11 @@ if __name__ == "__main__":
         repo_node_embedding = pickle.load(inf)
     
     train_dataset = MyDataset(samples=train_sample_path, repo_node_embedding=repo_node_embedding, contributor_embedding=contributor_node_embedding)
-    test_dataset = MyDataset(samples=test_sample_path, repo_node_embedding=repo_node_embedding, contributor_embedding=contributor_node_embedding)
-    eval_dataset = MyDataset(samples=eval_sample_path, repo_node_embedding=repo_node_embedding, contributor_embedding=contributor_node_embedding)
+    test_dataset  = MyDataset(samples=test_sample_path,  repo_node_embedding=repo_node_embedding, contributor_embedding=contributor_node_embedding)
+    eval_dataset  = MyDataset(samples=eval_sample_path,  repo_node_embedding=repo_node_embedding, contributor_embedding=contributor_node_embedding)
     train_dataloader = DataLoader(train_dataset, batch_size=64, shuffle=True, collate_fn=collate_fn)
-    eval_dataloader = DataLoader(eval_dataset, batch_size=64, shuffle=True, collate_fn=collate_fn)
-    test_dataloader = DataLoader(test_dataset, batch_size=64, shuffle=True, collate_fn=collate_fn)
+    eval_dataloader  = DataLoader(eval_dataset,  batch_size=64, shuffle=True, collate_fn=collate_fn)
+    test_dataloader  = DataLoader(test_dataset,  batch_size=64, shuffle=True, collate_fn=collate_fn)
 
     model = Net(embedding_dim=feat_size)
     optimizer = optim.Adam(model.parameters(), lr=0.001)
@@ -158,4 +161,3 @@ if __name__ == "__main__":
             pos_totals += pos_total
             neg_totals += neg_total
     precision, recall, f1 = metric(pos_rights, neg_rights, pos_totals, neg_totals)
-    print(f"Test: precision={precision}, recall={recall}, f1={f1}")

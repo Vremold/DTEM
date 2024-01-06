@@ -6,6 +6,16 @@ import torch.optim as optim
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, Dataset, random_split
 
+# 和 baseline.py 的区别: 
+# 1. 使用的模型文件不同 (bin/{baseline.bin,model.bin})
+# 2. 数据的特征数量不同 (此为512), 来源也不同 
+#   - baseline 是用pickle加载的, 在 ../TopicEmbedding/embed/{contributor,repo}_tpoic_embedding.pkl
+#   - train_nn 是用torch加载的, 来自 ../../GNN/HetSAGE/node_embedding/HetSAVE_node_embedding.bin
+# 3. batch_size不同: 那个是64, 这个是32.
+
+
+# feat_size = 512
+
 class Net(nn.Module):
     def __init__(self, embedding_dim):
         super(Net, self).__init__()
@@ -65,10 +75,11 @@ def metric(pos_right, neg_right, pos_total, neg_total):
 
 if __name__ == "__main__":
     train_sample_path = "./data/train.json"
-    eval_sample_path = "./data/valid.json"
     test_sample_path = "./data/test.json"
+    eval_sample_path = "./data/valid.json"
+
     model_path = "./bin/model.bin"
-    
+
     # Please replace the path with your own path
     node_embedding_path = "../../GNN/HetSAGE/node_embedding/HetSAGE_node_embedding.bin"
     all_embedding = torch.load(node_embedding_path)
@@ -76,12 +87,11 @@ if __name__ == "__main__":
     contributor_node_embedding = all_embedding["contributor"]
     
     train_dataset = MyDataset(samples=train_sample_path, repo_node_embedding=repo_node_embedding, contributor_embedding=contributor_node_embedding)
-    eval_dataset = MyDataset(samples=eval_sample_path, repo_node_embedding=repo_node_embedding, contributor_embedding=contributor_node_embedding)
-    test_dataset = MyDataset(samples=test_sample_path, repo_node_embedding=repo_node_embedding, contributor_embedding=contributor_node_embedding)
-
+    test_dataset  = MyDataset(samples=test_sample_path,  repo_node_embedding=repo_node_embedding, contributor_embedding=contributor_node_embedding)
+    eval_dataset  = MyDataset(samples=eval_sample_path,  repo_node_embedding=repo_node_embedding, contributor_embedding=contributor_node_embedding)
     train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True, collate_fn=collate_fn)
-    eval_dataloader = DataLoader(eval_dataset, batch_size=32, shuffle=True, collate_fn=collate_fn)
-    test_dataloader = DataLoader(test_dataset, batch_size=32, shuffle=True, collate_fn=collate_fn)
+    eval_dataloader  = DataLoader(eval_dataset,  batch_size=32, shuffle=True, collate_fn=collate_fn)
+    test_dataloader  = DataLoader(test_dataset,  batch_size=32, shuffle=True, collate_fn=collate_fn)
 
     model = Net(embedding_dim=512)
     optimizer = optim.Adam(model.parameters(), lr=0.001)

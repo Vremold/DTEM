@@ -11,3 +11,7 @@ NodeFeatureInitializer/*/*.txt
 GNN/DataPreprocess/full_graph/content/*.txt
 GHCrawler/readme/*
 GHCrawler/*/*.txt
+**/checkpoint/**
+*.swp
+**/wandb/**
+QUESTIONS.md

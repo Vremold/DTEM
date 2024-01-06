@@ -65,7 +65,6 @@ if __name__ == "__main__":
     with open(sample_path[1], "r", encoding="utf-8") as inf:
         samples.extend(json.load(inf))
     
-
     g = Graph(
         commit_rels_f="../../../GNN/DataPreprocess/full_graph/content/contributor_commit_repo.txt",
         follow_rels_f="../../../GNN/DataPreprocess/full_graph/content/contributor_follow_contributor.txt",

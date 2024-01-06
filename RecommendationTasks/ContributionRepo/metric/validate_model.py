@@ -74,7 +74,11 @@ if __name__ == "__main__":
     
     topks = {}
     for contributor_idx, search_scope, labels in dataset:
-        if len(labels) < 5:
+        # 看数据集. 是说在构造 ../data/user_watch_repos.json 的时候, 某个 developer 被选择了 >= 5 个正例的情况. 
+
+        # 对于给定的42个用户. 我们的输入数据包含了用户ID, 搜索范围(数据), labels(GroundTruth). 
+        # 对于搜索范围中的若干个仓库, 判断有多少个在 GT 中. 
+        if len(labels) < 5:  
             continue
         d = MyDataset(contributor_idx, search_scope, repo_embedding, contributor_embedding)
         dataloader = DataLoader(d, batch_size=128, shuffle=False, collate_fn=collate_fn)
@@ -99,6 +103,10 @@ if __name__ == "__main__":
                 rets[i] = rets[i - 1] + 1
 
         topks[contributor_idx] = (rets, search_scope)
-    
+
+    # 结果是这样的: 
+    # 每个用户一个元素组成的列表.
+    # 元素的第一个分量: 列表, [前k个推荐的在GT中的数量 for k in range(20)]
+    # 第二个分量: 列表, 被推荐的若干个仓库的列表. 
     with open(dst_result_path, "w", encoding="utf-8") as ouf:
         json.dump(topks, ouf, indent=4)
