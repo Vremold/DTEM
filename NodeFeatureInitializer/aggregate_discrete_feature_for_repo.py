@@ -11,13 +11,13 @@ REPO_STATISTIC_FILE = "../GHCrawler/cleaned/repo_statistics.txt"
 REPO_LANGUAGE_FILE = "../GHCrawler/cleaned/repo_languages.txt"
 
 class PCAModel():
+
     def __init__(self, n_components, model_file) -> None:
         if os.path.exists(model_file):
             self.pca = joblib.load(model_file)
         else:
             self.pca = PCA(n_components=n_components)
         self.model_file = model_file
-        pass
 
     def train(self, data):
         self.pca.fit(data)

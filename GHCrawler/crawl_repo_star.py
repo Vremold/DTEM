@@ -60,3 +60,4 @@ def crawl_stargazer_info():
 
 if __name__ == "__main__":
     crawl_stargazer_info()
+

@@ -4,6 +4,26 @@ import json
 
 from path import LOG_DIR, CRAWLED_DIR, SELECTED_REPO_PATH, CLEANED_DIR
 
+
+'''
+    将 CRAWLED_DIR 中的文件 (raw), 筛选一下, 输出到 CLEANED_DIR 中. 
+    
+        CRAWLED_DIR = "./rawdata/"
+        CLEANED_DIR = "./cleaned/"
+
+    在 ./export/selected_repos.json 中包含了 50k 个仓库的列表. 
+
+    此脚本就是从筛选出在这个列表中的仓库的相关信息. 
+    不过DataCleaner的其中几个方法, 除了筛选了仓库, 还对应了内容. 这样的方法有: 
+        - clean_repo_issues
+        - clean_repo_prs
+
+    @see also: 
+        - GHCrawler/export/README.md
+        - README.md
+
+'''
+
 class DataCleaner(object):
     def __init__(self, src_dir=CRAWLED_DIR, dst_dir=CLEANED_DIR, selected_repos=SELECTED_REPO_PATH) -> None:
         self.src_dir = src_dir

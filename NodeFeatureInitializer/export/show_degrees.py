@@ -17,8 +17,8 @@ def show_degrees(file: str):
         print("loading file...")
         data = pickle.load(f)
         keys = list(data.keys())
-        # item = data[keys[0]]
-        # print(f'len(item) = {len(item)}')
+        item = data[keys[0]]
+        print(f'len(item) = {len(item)}')
         print(f'Size of data: {len(keys)}')
 
 

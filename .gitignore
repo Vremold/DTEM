@@ -7,6 +7,7 @@
 *.bin
 *.so
 *.jsonl
+*.bak
 NodeFeatureInitializer/*/*.txt
 GNN/DataPreprocess/full_graph/content/*.txt
 GHCrawler/readme/*
