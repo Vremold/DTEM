@@ -6,7 +6,8 @@ import numpy as np
 import torch
 
 # Please replace this path with your own `absolute` path
-CACHE_DIR = "/root/wujw/DTEM/GNN/DataPreprocess/cache"
+# CACHE_DIR = "/root/wujw/DTEM/GNN/DataPreprocess/cache"
+CACHE_DIR = "/media/dell/disk/vkx/DTEM/GNN/DataPreprocess/cache"
 if not os.path.exists(CACHE_DIR):
     os.mkdir(CACHE_DIR)
 

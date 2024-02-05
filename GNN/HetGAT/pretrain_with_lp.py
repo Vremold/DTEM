@@ -209,7 +209,6 @@ def train(model, lp_scorer, train_dataloader, eval_dataloader, test_dataloader, 
                     "weight_L2": l2_sum,
                     "train_lp_accu": link_prediction_rights / link_prediction_totals,
                 })
-                pass
         
         scheduler.step()
         # Validation

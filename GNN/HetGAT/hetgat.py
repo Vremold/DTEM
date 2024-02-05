@@ -22,7 +22,7 @@ class HetGAT(torch.nn.Module):
         feat_drop=0.2,
         attn_drop=0.2,
         negative_slope=0.2,
-        ) -> None:
+    ) -> None:
         super().__init__()
 
         self.embed_size = embed_size

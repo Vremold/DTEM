@@ -35,7 +35,7 @@ model_result_valid_test
 """
 
 if __name__ == "__main__":
-    src_file = "./result/baseline_result_valid_test.json"
+    src_file = "./result/model_result_valid_test.json"
     with open(src_file, "r", encoding="utf-8") as inf:
         src = json.load(inf)
     

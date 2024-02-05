@@ -3,6 +3,13 @@ import os
 import sys
 import random
 
+"""
+    这个类只在这个文件中调用一次. 
+    其功能是在处理 GHCrawler 中爬取的数据: 
+
+    ../../GHCrawler/cleaned/* => ./full_graph/content/*
+"""
+
 class CrawledDataLoader(object):
     def __init__(self, crawled_data_dir, processed_data_dir, follow_sample_percent=1/3) -> None:
         self.processed_data_dir = processed_data_dir
@@ -13,7 +20,6 @@ class CrawledDataLoader(object):
         self.issues = dict()
         self.prs = dict()
         self.follow_sample_percent = follow_sample_percent
-        pass
     
     def _get_repo_id(self, repo):
         if repo not in self.repos:
@@ -185,5 +191,9 @@ if __name__ == "__main__":
     if not os.path.exists(crawled_data_dir):
         print("Source data dir not exists!")
         sys.exit(0)
-    cdl = CrawledDataLoader(crawled_data_dir=crawled_data_dir, processed_data_dir=processed_data_dir, follow_sample_percent=follow_sample_percent)
+    cdl = CrawledDataLoader(
+        crawled_data_dir=crawled_data_dir, 
+        processed_data_dir=processed_data_dir, 
+        follow_sample_percent=follow_sample_percent
+    )
     cdl.load_graph()

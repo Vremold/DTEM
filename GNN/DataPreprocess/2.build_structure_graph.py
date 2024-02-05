@@ -7,10 +7,21 @@ import dgl
 import torch
 from dgl.data.utils import save_graphs
 
+
+"""
+    这个类也只在此文件中使用这一次. 
+    刚才第一步中 1.load_crawled_data 做了数据处理, 
+    接下来构建图. 
+
+    (还没有针对节点的 embedding 做训练)
+
+        ./full_graph/content => ./full_graph/structure_graph.bin
+"""
+
 class GraphBuilder(object):
+
     def __init__(self, src_graph_dir) -> None:
         self.src_graph_dir = src_graph_dir
-        pass
 
     def load_star_and_watch_rels(self, hg_srcs:dict, reverse=False, contain_reverse=False):
         watch_rels = set()
@@ -68,6 +79,7 @@ class GraphBuilder(object):
 
         # if reverse:
         hg_srcs[("repository", "repo_committed_by_contributor", "contributor")] = (torch.tensor(dst), torch.tensor(src))
+        return weights
 
     def load_contributor_follow_contributor_rels(self, hg_srcs:dict, reverse=False, contain_reverse=False):
         # contributor - contributor
@@ -131,6 +143,12 @@ class GraphBuilder(object):
         return weights
 
     def build_graph(self, dst_graph_path):
+        """ 
+            Set hg_srcs, which is used to build `dgl` graph. 
+
+            1. invoke methods to set 9 normal kinds of edges; 
+            2. specify weights for 2 special kinds of edges;
+        """
         hg_srcs = dict()
 
         self.load_star_and_watch_rels(hg_srcs)
@@ -141,7 +159,7 @@ class GraphBuilder(object):
         self.load_issue_belong_to_repo_rels(hg_srcs)
         pr_state = self.load_pr_belong_to_repo_rels(hg_srcs)
 
-        hg = dgl.heterograph(hg_srcs)
+        hg = dgl.heterograph(hg_srcs)  # TODO CORE.  
 
         edge_label = 0
         for et in hg.etypes:

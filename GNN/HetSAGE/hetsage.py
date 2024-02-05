@@ -18,7 +18,7 @@ class HetSAGE(torch.nn.Module):
         out_dim, 
         num_hidden_layers=1,
         feat_drop=0.2,
-        ) -> None:
+    ) -> None:
         super().__init__()
 
         self.embed_size = embed_size
@@ -74,7 +74,10 @@ class HetSAGE(torch.nn.Module):
     def forward(self, blocks, node_feats, node_tids=None):
         if node_tids is None:
             node_tids = blocks[0].srcdata[dgl.NID]
-        h = self.hetero_linear({ntype: node_feats[ntype][node_tids[ntype]] for ntype in node_tids})
+        h = self.hetero_linear({
+            ntype: node_feats[ntype][node_tids[ntype]] 
+            for ntype in node_tids
+        })
         
         for layer, block in zip(self.layers, blocks):
             h = layer(block, h)

@@ -67,7 +67,7 @@ class ParameterNamespace():
         self.max_grad = 4
         self.omega = 0.1
 
-        # pretrained model path
+        # Trained model path
         # Please replace the path with your own trained model path
         self.trained_model_path = "./bin/cat/model.bin"
         self.node_embedding_dir = f"./node_embedding/{special_suffix}_{now}/"

@@ -1,0 +1,141 @@
+general:
+  # 常用信息
+  # 1. 总开发者的数量: 394474
+  # 2. 总的pr的数量:  
+
+  # 最近的指令: 
+  # - import Comparisons.experiments.alpha.collect_data.get_pr_apis
+  # - 
+
+  filepath: 
+
+    contributor_idx_file: 'GNN/DataPreprocess/full_graph/content/contributors.json'
+    repository_idx_file:  'GNN/DataPreprocess/full_graph/content/repositories.json'
+    # JSON <| { '$repo_name#$issue_idx': int }
+    issue_idx_file:       'GNN/DataPreprocess/full_graph/content/issues.json'
+
+    # LIST <| $user_id || $repo_id || $weight
+    contributor_commit_repo_file:   'GNN/DataPreprocess/full_graph/content/contributor_commit_repo.txt'
+    # LIST <| $user_id || $issue_id || None
+    contributor_propose_issue_file: 'GNN/DataPreprocess/full_graph/content/contributor_propose_issue.txt'
+
+    issue_content_file:   'NodeFeatureInitializer/IssueEmbedding/issue_descriptions.txt'  # jsonl
+
+    linguist_file:        'Comparisons/data/alpha/languages.yml'
+  
+  tokens: 
+    - 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  # 惠珍的 token
+    - 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  # SMSQO-2
+    - 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  # SMSQO-3
+    - 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  # SMSQO (Main account)
+    - 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  # SMSQO-4
+    - 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  # VKX-bot-0
+    - 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  # VKX-bot-1
+    - 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  # VKX-bot-2
+
+  example:  # 做测试用 
+    user: 
+      - tcurdt
+      - ebourg
+      - tmortagne
+    repo: 
+      - tcurdt/jdeb
+      - tcurdt/jdependency
+      - connectbot/connectbot
+      - rnewson/couchdb-lucene
+      - apache/activemq
+    issue: 
+      - datalux/osintgram#670
+      - datalux/osintgram#669
+      - datalux/osintgram#668
+      - datalux/osintgram#667
+      - datalux/osintgram#666
+
+
+alpha: 
+  collect_data:
+    # readme_directory:               'GHCrawler/readme'
+    readme_directory:               'readme'
+    repo_without_readme_list_file:  'GHCrawler/repo_lackof_readme.lst'
+
+    api: 
+      src: 
+        # LIST <| $user_id || $pr_id || None
+        contributor_propose_pr_file:    'GNN/DataPreprocess/full_graph/content/contributor_propose_pr.txt'
+        # JSON <| { '$repo_name#$pr_idx': int }
+        pr_idx_file:          'GNN/DataPreprocess/full_graph/content/prs.json'
+        # ::WARNING:: HUGE FILE
+        # LIST <| $repo_name || $pr_idx || $github_url || $content
+        #   $content = JSON <| [](
+        #       { filename: string, patch: string } & 
+        #       (
+        #           { file: string } 
+        #         | { content_url: string, raw_url: string }
+        #       )
+        #   )
+        # total = 1829584
+        repo_pr_commits_file: 'GHCrawler/cleaned/repo_pr_commits.txt'
+      dst: 
+        # PICKLE <| {$user_id: []$pr_name }
+        contributor_api_names_file: 'Comparisons/data/alpha/contributor_api_names.pkl'
+        hugefile_cleaned: 'Comparisons/data/alpha/hugefile-cleaned.pkl'  # TODO SEE C/e/a/collect_data/get_pr_apis.py 54
+
+  raw: 
+    repo_file_path:         'Comparisons/data/alpha/repos.jsonl'
+    issue_title_file_path:  'Comparisons/data/alpha/issues.jsonl'
+    user_bio_file_path:     'Comparisons/data/alpha/user_bio.json'
+    # LIST <| $user_id || $content 
+    #   $content = JSON <| string[]
+    user_api_file_path:     'Comparisons/data/alpha/user_api.txt'
+    user_api_file_path_2:   'Comparisons/data/alpha/user_apis.pkl'
+
+  model: 
+    dev2vec_repo_file_path:   'Comparisons/experiments/alpha/bin/dev2vec_repos'
+    dev2vec_issue_file_path:  'Comparisons/experiments/alpha/bin/dev2vec_issues'
+    dev2vec_api_file_path:    'Comparisons/experiments/alpha/bin/doc2vecR.200.30.20.5.1550908281.eAp.trained'
+
+  embedding:
+    contributor_repo_embedding:   'Comparisons/embedding/alpha/contributor_repo_embedding.pkl'
+    contributor_issue_embedding:  'Comparisons/embedding/alpha/contributor_issue_embedding.pkl'
+    contributor_api_embedding:    'Comparisons/embedding/alpha/contributor_api_embedding.pkl'
+    contributor_merged_embedding: 'Comparisons/embedding/alpha/contributor_embedding.pth'
+
+  tasks: 
+    sim_developer: 
+      data:
+        train_file: 'RecommendationTasks/SimDeveloper/data/train.json'
+        valid_file: 'RecommendationTasks/SimDeveloper/data/valid.json'
+        test_file:  'RecommendationTasks/SimDeveloper/data/test.json'
+
+        # 这个是专门在验证的过程中使用的. 
+        valid_test_file: 'RecommendationTasks/SimDeveloper/metric/data/dataset_valid_test.json'
+      model:
+        model_file: 'Comparisons/model/alpha/sim_developer/model.bin'
+
+      result: 
+        valid_test_result: 'Comparisons/data/alpha/model_valid_test_result.txt'
+
+
+beta:
+  embedding:
+    metapath_embedding:       'Comparison/embedding/beta/node_metapath_embedding_without_watch.bin'
+    pr_initial_embedding:     'Comparison/embedding/beta/pr_node_initial_embedding.pt'
+    issue_initial_embedding:  'Comparison/embedding/beta/issue_node_initial_embedding.pt'
+    repo_initial_embedding:   'Comparison/embedding/beta/repo_node_initial_include_topic.pt'
+
+  data:
+    graph_without_watch(without any feature):     'Comparison/data/beta/structure_graph_without_watch.bin'
+    graph_with_node_feature:                      'Comparison/data/beta/structure_graph_with_node_feature.bin'
+
+
+gamma: 
+  filepath:
+    data: 
+      graph: # TODO
+    embedding: 
+    model: 
+
+  train: 
+    lr: 0.001
+    epochs: 40
+    device: 'cuda:0'

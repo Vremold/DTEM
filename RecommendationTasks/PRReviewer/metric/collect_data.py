@@ -46,6 +46,7 @@ if __name__ == "__main__":
         watch_rels_f="../../../GNN/DataPreprocess/full_graph/content/contributor_watch_repo.txt",
     )
 
+    # pr -> real reviewer
     pr_labels = {}
     for sample in samples:
         repo_idx, pr_idx, _, _ = sample

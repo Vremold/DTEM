@@ -10,13 +10,24 @@ from dgl.data.utils import save_graphs
 
 from utils import RepositoryFeatureLoader, IssueFeatureLoader, PRFeatureLoader
 
-structure_graph_file = "./full_graph/structure_graph.bin"
-issue_idx_file = "./full_graph/content/issues.json"
-pr_idx_file = "./full_graph/content/prs.json"
-repo_idx_file = "./full_graph/content/repositories.json"
-feature_dir = "../../NodeFeatureInitializer/export"
-metapath_node_embedding_file = "./cache/full_graph/node_metapath_embedding.bin"
-dst_graph_file = "./full_graph/structure_graph_with_node_feature.bin"
+"""
+    上一步得到的文件是 ./cache/full_graph/node_metapath_embedding.bin, 
+    包含了经过 metapath 训练得到的节点 embedding.
+    我们将这些embedding与节点的其他特征拼接起来, 得到最终的节点特征.
+
+    Note: 
+        没有训练: 这一步只是拼接.
+        输出: ./full_graph/structure_graph_with_node_feature.bin
+"""
+
+
+structure_graph_file            = "./full_graph/structure_graph.bin"
+issue_idx_file                  = "./full_graph/content/issues.json"
+pr_idx_file                     = "./full_graph/content/prs.json"
+repo_idx_file                   = "./full_graph/content/repositories.json"
+feature_dir                     = "../../NodeFeatureInitializer/export"
+metapath_node_embedding_file    = "./cache/full_graph/node_metapath_embedding.bin"
+dst_graph_file                  = "./full_graph/structure_graph_with_node_feature.bin"
 
 if __name__ == "__main__":
     device = torch.device("cpu")
@@ -50,6 +61,9 @@ if __name__ == "__main__":
     # hg = dgl.transforms.AddReverse(sym_new_etype=True)(hg)
     metapath_node_embedding = torch.load(metapath_node_embedding_file, map_location=device)
 
+    # 这里将 pr, repo, issue, contributor 的 embedding 与 metapath 的 embedding 拼接. 
+    # TODO 我们可以考虑不用 pric 的 embedding, 将它们随机化. 再做后面的训练
+    # 然后比较各个下游任务上的效果. 
     hg.nodes["pr"].data["feat"] = torch.cat([metapath_node_embedding["pr"], pr_feature], dim=1)
     hg.nodes["repository"].data["feat"] = torch.cat([metapath_node_embedding["repository"], repo_feature], dim=1)
     hg.nodes["issue"].data["feat"] = torch.cat([metapath_node_embedding["issue"], issue_feature], dim=1)
