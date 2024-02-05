@@ -9,11 +9,7 @@ import math
 import random
 import sys, os
 from typing import Dict, List, Optional
-
-printe = lambda text: print(text, file=sys.stderr)
-from rich import print
-from tqdm.rich import tqdm
-
+from tqdm import tqdm
 
 '''
     如果你想训练协同过滤模型, 下面是你可以参考的代码(写入项目根目录下的某文件中并运行): 
@@ -133,7 +129,7 @@ class CollaborativeFiltering:
         recs: List[int]  # recs: recommendations, 实际被推荐的仓库. 
 
         if dev_id not in self.user_sim_matrix: 
-            printe("warning: Nothing to recommend.")
+            print("warning: Nothing to recommend.")
             recs = []
         else: 
             # related.keys:   another user's id (idB); 

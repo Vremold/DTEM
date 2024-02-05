@@ -159,7 +159,7 @@ class GraphBuilder(object):
         self.load_issue_belong_to_repo_rels(hg_srcs)
         pr_state = self.load_pr_belong_to_repo_rels(hg_srcs)
 
-        hg = dgl.heterograph(hg_srcs)  # TODO THIS MAY BE IMPORTANT. TRY TO MODIFY THIS. 
+        hg = dgl.heterograph(hg_srcs)  # TODO CORE.  
 
         edge_label = 0
         for et in hg.etypes:

@@ -59,6 +59,4 @@ if __name__ == "__main__":
 
     print(top1 / total, top3 / total, top5 / total, top10 / total, MRR / total)
     print(scope_length / total)
-
-
-    
+    print(scope_length, total)

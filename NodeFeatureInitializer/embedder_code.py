@@ -251,7 +251,7 @@ def embed_code_snippet(model, tokenizer, code_file_name, pool, lang, code_length
         code_dataset, sampler=code_sampler, batch_size=batch_size, num_workers=4)
     
     project_path_embedding = {}
-    project_path_n_funcs = {}
+    project_path_n_funcs   = {}
 
     model.eval()
     print("Start running the model...")
@@ -261,10 +261,10 @@ def embed_code_snippet(model, tokenizer, code_file_name, pool, lang, code_length
         position_idx = batch[2].to(device)
 
         projects = batch[3]
-        paths = batch[4]
+        paths    = batch[4]
         with torch.no_grad():
             code_vecs = model(code_inputs=code_inputs,
-                             attn_mask=attn_mask, position_idx=position_idx)
+                              attn_mask=attn_mask, position_idx=position_idx)
             code_vecs = code_vecs.cpu().numpy()
             
             for project, path, vec in zip(projects, paths, code_vecs):

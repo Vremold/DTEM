@@ -209,6 +209,7 @@ def train(model, lp_scorer, train_dataloader, eval_dataloader, test_dataloader, 
                 })
         
         scheduler.step()
+
         # Validation
         val_loss, val_link_prediction_accuracy, lp_category_rights, lp_category_totals = \
             evaluate(model, lp_scorer, eval_dataloader, node_feats)

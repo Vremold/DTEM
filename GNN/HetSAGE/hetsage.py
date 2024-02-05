@@ -74,7 +74,10 @@ class HetSAGE(torch.nn.Module):
     def forward(self, blocks, node_feats, node_tids=None):
         if node_tids is None:
             node_tids = blocks[0].srcdata[dgl.NID]
-        h = self.hetero_linear({ntype: node_feats[ntype][node_tids[ntype]] for ntype in node_tids})
+        h = self.hetero_linear({
+            ntype: node_feats[ntype][node_tids[ntype]] 
+            for ntype in node_tids
+        })
         
         for layer, block in zip(self.layers, blocks):
             h = layer(block, h)

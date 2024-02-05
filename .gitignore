@@ -7,6 +7,8 @@
 *.bin
 *.so
 *.jsonl
+*.json.*
+*.jsonl.*
 *.bak
 NodeFeatureInitializer/*/*.txt
 GNN/DataPreprocess/full_graph/content/*.txt
@@ -18,4 +20,27 @@ GHCrawler/*/*.txt
 QUESTIONS.md
 RecommendationTasks/ContributionRepo_CF/bin/**
 RecommendationTasks/ContributionRepo_CF/metric/result/**
+readme/*
+**/bin/*
 
+Comparisons/data/*
+Comparisons/embedding/*
+Comparisons/experiments/alpha/bin/*
+Comparisons/experiments/gamma/DataPreprocess/full_graph/**
+Comparisons/experiments/gamma/RecommendationTasks/*.json
+Comparisons/experiments/gamma/RecommendationTasks/*.bin
+Comparisons/experiments/gamma/**/result.txt
+Comparisons/experiments/gamma/**/output.txt
+
+Comparisons/experiments/beta/**/*.txt
+RecommendationTasks/**/*.txt
+
+**/result.txt
+
+
+GNN/HetSAGE/trained/tec-free/result.txt
+GHCrawler/repo_lackof_readme.lst
+
+Comparisons/experiments/beta/result/HetSAGE/RecommendationTasks/Result.md
+RecommendationTasks/PRReviewer_CF/README.md    
+RecommendationTasks/RepoMaintainer_CF/README.md

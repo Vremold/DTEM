@@ -72,6 +72,7 @@ if __name__ == "__main__":
         watch_rels_f="../../../GNN/DataPreprocess/full_graph/content/contributor_watch_repo.txt",
     )
 
+    # {contributor: [positive_repos]}
     contributor_labels = {}
     for sample in samples:
         contributor_idx, pos_repo_idx, neg_repo_idx = sample

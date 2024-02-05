@@ -206,20 +206,20 @@ def prepare_dataloader_for_lp(hg, fanouts, batch_size, negative_samples, use_gpu
     # sampler = dgl.dataloading.MultiLayerFullNeighborSampler(2)
     sampler = dgl.dataloading.NeighborSampler(fanouts, replace=False)
     """
-    exclue="self" 删除在minibatch中出现的边，这样的预测总不会有任何问题
+    exclude="self" 删除在minibatch中出现的边，这样的预测总不会有任何问题
     """
     train_sampler = dgl.dataloading.as_edge_prediction_sampler(sampler, negative_sampler=dgl.dataloading.negative_sampler.Uniform(negative_samples), exclude="self")
-    val_sampler = dgl.dataloading.as_edge_prediction_sampler(sampler, negative_sampler=dgl.dataloading.negative_sampler.Uniform(negative_samples), exclude="self")
-    test_sampler = dgl.dataloading.as_edge_prediction_sampler(sampler, negative_sampler=dgl.dataloading.negative_sampler.Uniform(negative_samples), exclude="self")
+    val_sampler =   dgl.dataloading.as_edge_prediction_sampler(sampler, negative_sampler=dgl.dataloading.negative_sampler.Uniform(negative_samples), exclude="self")
+    test_sampler =  dgl.dataloading.as_edge_prediction_sampler(sampler, negative_sampler=dgl.dataloading.negative_sampler.Uniform(negative_samples), exclude="self")
 
     if use_gpu:
-        train_dataloader = dgl.dataloading.DataLoader(hg, train_eid_dict, train_sampler, batch_size=batch_size, shuffle=True, drop_last=False, device=device)
-        val_dataloader = dgl.dataloading.DataLoader(hg, validate_eid_dict, val_sampler, batch_size=512, shuffle=True, drop_last=False, device=device)
-        test_dataloader = dgl.dataloading.DataLoader(hg, test_eid_dict, test_sampler, batch_size=512, shuffle=True, drop_last=False, device=device)
+        train_dataloader = dgl.dataloading.DataLoader(hg, train_eid_dict,    train_sampler, batch_size=batch_size,  shuffle=True, drop_last=False, device=device)
+        val_dataloader   = dgl.dataloading.DataLoader(hg, validate_eid_dict, val_sampler,   batch_size=512,         shuffle=True, drop_last=False, device=device)
+        test_dataloader  = dgl.dataloading.DataLoader(hg, test_eid_dict,     test_sampler,  batch_size=512,         shuffle=True, drop_last=False, device=device)
     else:
-        train_dataloader = dgl.dataloading.DataLoader(hg, train_eid_dict, train_sampler, batch_size=batch_size, shuffle=True, drop_last=False, num_workers=4)
-        val_dataloader = dgl.dataloading.DataLoader(hg, validate_eid_dict, val_sampler, batch_size=512, shuffle=True, drop_last=False, num_workers=4)
-        test_dataloader = dgl.dataloading.DataLoader(hg, test_eid_dict, test_sampler, batch_size=512, shuffle=True, drop_last=False, num_workers=4)
+        train_dataloader = dgl.dataloading.DataLoader(hg, train_eid_dict,    train_sampler, batch_size=batch_size,  shuffle=True, drop_last=False, num_workers=4)
+        val_dataloader   = dgl.dataloading.DataLoader(hg, validate_eid_dict, val_sampler,   batch_size=512,         shuffle=True, drop_last=False, num_workers=4)
+        test_dataloader  = dgl.dataloading.DataLoader(hg, test_eid_dict,     test_sampler,  batch_size=512,         shuffle=True, drop_last=False, num_workers=4)
     
     print("     Train Dataloader Length:", len(train_dataloader))
     print("Validation Dataloader Length:", len(val_dataloader))
