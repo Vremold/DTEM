@@ -11,3 +11,17 @@ NodeFeatureInitializer/*/*.txt
 GNN/DataPreprocess/full_graph/content/*.txt
 GHCrawler/readme/*
 GHCrawler/*/*.txt
+
+Comparisons/
+GHCrawler/repo_lackof_readme.lst
+GNN/HetSAGE/trained/
+GNN/HetSAGE/wandb/
+NodeFeatureInitializer/export/repo_code_path_emebedding.pkl.bak
+QUESTIONS.md
+RecommendationTasks/ContributionRepo_CF/
+RecommendationTasks/PRReviewer_CF/
+RecommendationTasks/RepoMaintainer/bin/
+RecommendationTasks/RepoMaintainer_CF/
+RecommendationTasks/SimDeveloper_CF/
+checkpoint/
+wandb/
