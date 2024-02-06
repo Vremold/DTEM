@@ -36,6 +36,11 @@
 ## 项目树介绍
 ```
 .
+├── Comparisons                         # 三个对比实验
+│   └── experiments                         # 对比试验所用脚本
+│       ├── alpha				# 用Dev2Vec论文中提到的给开发者建模的方法
+│       ├── beta				# 在社交关系图上删去watch关系
+│       └── gamma 				# 用SMEF论文中的社交网络的方法做对比
 ├── GHCrawler                           # GitHub数据获取
 │   ├── cleaned                             # 清洗数据存放处  
 │   ├── export                              # 可用数据存放处               
@@ -66,9 +71,13 @@
 │       └── tree-sitter-ruby
 ├── RecommendationTasks                 # 各种下游推荐任务设计
 │   ├── ContributionRepo                    # 为开发者推荐合适贡献的仓库
+│   ├── ContributionRepo_CF                 # 使用协同过滤方法
 │   ├── PRReviewer                          # 为仓库PR推荐合适评审员
+│   ├── PRReviewer_CF                       # 使用协同过滤方法
 │   ├── RepoMaintainer                      # 为仓库推荐合适的维护者
+│   ├── RepoMaintainer_CF                   # 使用协同过滤方法
 │   ├── SimDeveloper                        # 为开发者推荐相似开发者
+│   ├── SimDeveloper_CF                     # 使用协同过滤方法
 │   └── TopicEmbedding                      # 主题方法的实体嵌入数据
 ├── T-Test                              # 无监督T-检验实验
 │   ├── user_contribute_repository          # 无监督任务1
@@ -76,3 +85,4 @@
 ```
 ## 项目数据
 后面将会以外部链接的形式放在这里（挖坑）。
+
